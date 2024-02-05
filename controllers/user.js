@@ -237,7 +237,7 @@ try{
    static delete= async(req,res)=>{
         try{
             const deletedUser = await User.destroy({
-                where: { id: req.body.id },
+                where: { id: req.params.id },
             });
             if(deletedUser==1)
          {
