@@ -24,19 +24,6 @@ const router = express.Router();
  *                    type: string
  */
 
-/**
- * @swagger
- *  components:
- *      schemas:
- *          user:
- *              type: object
- *              properties:
- *                  id: 
- *                    type: integer
- *                  age:
- *                    type: integer
- */
-
 
 /**
  * @swagger
@@ -129,7 +116,12 @@ const router = express.Router();
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#components/schemas/user'
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               age:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Updated successfully
@@ -164,7 +156,73 @@ const router = express.Router();
  *              description: Data is deleted
  */
 
+// Documentation for login 
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: User Login
+ *     description: Authenticate user and generate access token and refresh token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email_id:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful, returns access token and refresh token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: JWT access token
+ *                 refreshToken:
+ *                   type: string
+ *                   description: JWT refresh token
+ *       401:
+ *         description: Invalid username or password
+ */
 
+
+// Documentaion for refresh token
+/**
+ * @swagger
+ * /refresh:
+ *   post:
+ *     summary: Refresh Access Token
+ *     description: Generate a new access token using a refresh token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: New access token generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: New JWT access token
+ *       401:
+ *         description: Invalid refresh token
+ */
 router.get('/user',userController.get_UserData)
 .get('/distinct/:columnName',userController.get_Distinct)
 .get('/user',userController.get_filteredData)
@@ -173,6 +231,7 @@ router.get('/user',userController.get_UserData)
 .get('/max/:columnName',userController.get_max)
 .post('/user/sign_up',userController.sign_up)
 .post('/user/follow',userController.follow)
+.post('/refresh',userController.refreshToken)
 .post('/user/login',userController.login)
 .delete('/user/delete/:id',userController.delete)
 .put('/user/update',userController.update);

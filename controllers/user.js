@@ -8,6 +8,8 @@ const signToken =id =>{
       expiresIn:10000000
     });
   }
+  const refreshTokens=[];
+  const jwtSecret="this is jwt scret"
 class usersController {
     static get_UserData=async (req, res) => {
         try {
@@ -225,15 +227,30 @@ try{
                 }) 
     
             }
-           else res.status(200).json({fetchedUser});
-
-
+           else 
+           {
+            const accessToken = jwt.sign({ email_id: fetchedUser.id }, jwtSecret, { expiresIn: '15m' });
+            const refreshToken = jwt.sign({ emaild_id: fetchedUser.id }, jwtSecret);
+            refreshTokens.push(refreshToken);
+            res.json({ accessToken, refreshToken });
+           }
 
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+   static refreshToken=async (req,res)=>{
+    const {refreshToken}=req.body;
+    if(!refreshTokens.includes(refreshToken)){
+        res.status(401).json({error:"Invalid refresh token"})
+    }
+    console.log("aman")
+    const decoded = jwt.verify(refreshToken, jwtSecret);
+    const email_id = decoded.email_id;
+    const accessToken = jwt.sign({ email_id }, jwtSecret, { expiresIn: '15m' });
+    res.json({accessToken})
+   }
    static delete= async(req,res)=>{
         try{
             const deletedUser = await User.destroy({
