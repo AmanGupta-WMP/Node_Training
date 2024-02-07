@@ -2,7 +2,7 @@
 const express=require('express');
 const userController=require('../../controllers/user');
 const router = express.Router();
-
+const passport=require('../../passport');
 /**
  * @swagger
  *  components:
@@ -232,7 +232,8 @@ router.get('/user',userController.get_UserData)
 .post('/user/sign_up',userController.sign_up)
 .post('/user/follow',userController.follow)
 .post('/refresh',userController.refreshToken)
-.post('/user/login',userController.login)
+.post('/user/login', passport.authenticate('local', { session: false }), userController.login)
+// .post('/user/login',userController.login)
 .delete('/user/delete/:id',userController.delete)
 .put('/user/update',userController.update);
 

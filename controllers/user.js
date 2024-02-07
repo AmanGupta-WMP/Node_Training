@@ -3,6 +3,7 @@ const {Op}=require('sequelize');
 const validate=require('validator');
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken');
+const passport=require('passport');
 const signToken =id =>{
     return jwt.sign({id},"sfdghjer5678e4567ufgt5f6g654erfg",{
       expiresIn:10000000
@@ -206,38 +207,18 @@ try{
     }
     
     static login=async (req, res) => {
-        try {
-            const fetchedUser = await User.findOne({
-                where: {
-                    email_id: req.body.email_id,
-                },
-            });
-            if(fetchedUser==null)
-            {
-                res.status(400).json({
-                    status:"fail",
-                    message:"Email or password not matched"
-                })
-            }
-            else if(!bcrypt.compare(fetchedUser.password,req.body.password))
-            {
-                res.status(400).json({
-                    status:"fail",
-                    message:"password not matched"
-                }) 
-    
-            }
-           else 
-           {
-            const accessToken = jwt.sign({ email_id: fetchedUser.id }, jwtSecret, { expiresIn: '15m' });
-            const refreshToken = jwt.sign({ emaild_id: fetchedUser.id }, jwtSecret);
-            refreshTokens.push(refreshToken);
-            res.json({ accessToken, refreshToken });
-           }
+        try{
+
+        console.log(req.session);
+        console.log(req.User);
+        res.json({
+          status:'success',
+          message:"User login successfully"
+        })
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            res.status(401).json({ error: 'Invalid credentials' });
         }
     }
    static refreshToken=async (req,res)=>{

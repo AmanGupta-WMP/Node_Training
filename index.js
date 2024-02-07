@@ -1,10 +1,19 @@
 
 const express = require('express');
 const app = express();
-
+const passport = require('passport');
+const session = require('express-session');
 const swaggerJSDoc =require('swagger-jsdoc')
 const swaggerUi=require('swagger-ui-express')
+const pgSession = require('connect-pg-simple');
+require('./passport')
 // GET all users
+
+
+app.use(express.urlencoded({ extended: false }));
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 const options={

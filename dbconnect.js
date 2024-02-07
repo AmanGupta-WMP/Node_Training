@@ -5,6 +5,9 @@ const account=require('./models/bank_account');
         host: "localhost",
         dialect: "postgres"
     });
+//Middleware
+
+
 
 User = userModel(sequelize);
 let Contact=contact_info(sequelize);
